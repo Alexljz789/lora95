@@ -482,6 +482,20 @@
     const deviceCount = (data.devices || []).length;
     $("#status-stats").textContent = `${deviceCount} 设备 / ${stats.packets || 0} 包`;
     $("#device-count").textContent = String(deviceCount);
+    const emptyBox = $("#list-empty");
+    if (emptyBox) {
+      const title = emptyBox.querySelector("b");
+      const spans = emptyBox.querySelectorAll("span");
+      if (scan.running) {
+        if (title) title.textContent = "正在扫描…";
+        if (spans[0]) spans[0].textContent = "正在轮换频点与参数，收到帧后会出现在这里。";
+        if (spans[1]) spans[1].textContent = "Meshtastic / LoRaWAN / 私有协议";
+      } else {
+        if (title) title.textContent = "尚未发现设备";
+        if (spans[0]) spans[0].textContent = "按“开始”扫描附近的 LoRa 信号。";
+        if (spans[1]) spans[1].textContent = "Meshtastic / LoRaWAN / 私有协议";
+      }
+    }
     const progress = scan.total > 0 ? Math.min(100, Math.round((scan.index / scan.total) * 100)) : 0;
     $("#scan-progress").style.width = `${scan.running ? Math.max(2, progress) : 0}%`;
     const progressText = scan.running
