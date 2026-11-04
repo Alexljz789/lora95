@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Local development artifacts
+dist/
+shots/
+ref/
+*.tar.gz
+*.db
+*.db-wal
+*.db-shm
+*.log
+
+# Editor/OS noise
+.DS_Store
+Thumbs.db
+*.swp

@@ -1,0 +1,22 @@
+[Unit]
+Description=LoRa95 web UI (Flask + SSE)
+Documentation=https://github.com/Alexljz789/lora95
+After=network.target
+
+[Service]
+Type=simple
+User=alex
+Group=alex
+WorkingDirectory=/opt/lora95
+Environment=PYTHONPATH=/opt/lora95
+Environment=PYTHONUNBUFFERED=1
+Environment=LORA95_SOCKET=/run/lora95/radio.sock
+Environment=LORA95_CONFIG=/home/alex/.config/lora95/config.json
+Environment=LORA95_DB=/home/alex/.local/share/lora95/lora95.db
+Environment=LORA95_PORT=8766
+ExecStart=/usr/bin/python3 -m app.web
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,67 @@
+#!/bin/bash
+# LoRa95 kiosk launcher for the uConsole (XFCE / X11).
+#
+# Starts the root radio daemon and the per-user web service, opens Chromium in
+# kiosk mode, then stops both services when the browser exits.  The radio
+# daemon restores meshtasticd during shutdown.
+set -u
+
+export DISPLAY="${DISPLAY:-:0}"
+export XAUTHORITY="${XAUTHORITY:-/home/alex/.Xauthority}"
+URL="${LORA95_URL:-http://127.0.0.1:8766}"
+PROFILE="${HOME}/.config/lora95-chromium"
+SYSTEMCTL="$(command -v systemctl || echo /usr/bin/systemctl)"
+BROWSER="$(command -v chromium || command -v chromium-browser || true)"
+
+cleanup() {
+    # Stop the UI first, then the radio daemon (which restores meshtasticd).
+    sudo -n "$SYSTEMCTL" stop lora95-web.service >/dev/null 2>&1 || true
+    sudo -n "$SYSTEMCTL" stop lora95-radio.service >/dev/null 2>&1 || true
+}
+trap cleanup EXIT INT TERM
+
+if [ -z "$BROWSER" ]; then
+    xmessage -center "LoRa95: Chromium is not installed." >/dev/null 2>&1 || true
+    exit 1
+fi
+
+sudo -n "$SYSTEMCTL" start lora95-radio.service >/dev/null 2>&1 || true
+sudo -n "$SYSTEMCTL" start lora95-web.service >/dev/null 2>&1 || true
+
+for _ in $(seq 1 80); do
+    if curl -sf --max-time 1 "$URL/api/health" >/dev/null 2>&1; then
+        break
+    fi
+    sleep 0.25
+done
+if ! curl -sf --max-time 1 "$URL/api/health" >/dev/null 2>&1; then
+    xmessage -center "LoRa95: the web service did not start.
+Check: journalctl -u lora95-web -u lora95-radio" >/dev/null 2>&1 || true
+    exit 1
+fi
+
+mkdir -p "$PROFILE"
+"$BROWSER" \
+    --kiosk \
+    --app="$URL" \
+    --start-fullscreen \
+    --window-position=0,0 \
+    --window-size=1280,720 \
+    --lang=zh-CN \
+    --user-data-dir="$PROFILE" \
+    --no-first-run \
+    --no-default-browser-check \
+    --disable-infobars \
+    --disable-session-crashed-bubble \
+    --disable-translate \
+    --disable-features=Translate,TranslateUI,LanguageDetection,TranslateRanker \
+    --password-store=basic \
+    --use-mock-keyring \
+    --noerrdialogs \
+    --overscroll-history-navigation=0 \
+    --autoplay-policy=no-user-gesture-required \
+    --force-device-scale-factor=1 \
+    --check-for-update-interval=31536000 \
+    "$URL" &
+CHILD=$!
+wait "$CHILD"

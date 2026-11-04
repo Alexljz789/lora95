@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#008080">
+<link rel="icon" type="image/png" href="/static/img/icon.png">
+<title>LoRa95 — LoRa 信号扫描仪</title>
+<link rel="stylesheet" href="/static/vendor/98css/98.css">
+<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-lora" viewBox="0 0 16 16">
+      <path fill="#000" d="M7 1h2v1h1v1h1v2h-1v1H9v1H8v6h3v1H5v-1h3V7H7V6H6V5H5V3h1V2h1z"/>
+      <path fill="#000" d="M1 3h1v1H1zM2 2h1v3H2zM3 1h1v5H3z"/>
+      <path fill="#000" d="M14 3h1v1h-1zM13 2h1v3h-1zM12 1h1v5h-1z"/>
+      <path fill="#008000" d="M7 2h2v1H7zM6 3h1v2H6zM9 3h1v2H9zM7 5h2v1H7z"/>
+    </symbol>
+    <symbol id="i-node" viewBox="0 0 16 16">
+      <path fill="#000" d="M2 5h12v9H2zM7 1h2v1h1v3H6V2h1z"/>
+      <path fill="#c0c0c0" d="M3 6h10v7H3z"/>
+      <path fill="#000080" d="M4 7h8v2H4zM4 10h5v1H4z"/>
+      <path fill="#008000" d="M4 12h2v1H4zM11 10h1v1h-1z"/>
+    </symbol>
+    <symbol id="i-sensor" viewBox="0 0 16 16">
+      <path fill="#000" d="M3 4h9v9H3zM12 6h1v1h1v4h-1v1h-1z"/>
+      <path fill="#fff" d="M4 5h7v7H4z"/>
+      <path fill="#000080" d="M5 6h5v1H5zM5 8h3v1H5z"/>
+      <path fill="#008000" d="M5 10h2v1H5z"/>
+      <path fill="#000" d="M14 5h1v1h-1zM15 7h1v2h-1zM14 10h1v1h-1z"/>
+    </symbol>
+    <symbol id="i-signal" viewBox="0 0 16 16">
+      <path fill="#000" d="M2 12h2v2H2zM5 9h2v5H5zM8 6h2v8H8zM11 3h2v11h-2z"/>
+      <path fill="#008000" d="M3 13h1v1H3zM6 10h1v4H6zM9 7h1v7H9z"/>
+    </symbol>
+    <symbol id="i-raw" viewBox="0 0 16 16">
+      <path fill="#000" d="M2 1h12v14H2z"/>
+      <path fill="#fff" d="M3 2h10v12H3z"/>
+      <path fill="#000" d="M4 3h8v1H4zM4 5h2v1H4zM8 5h4v1H8zM4 7h3v1H4zM9 7h3v1H9zM4 9h7v1H4zM4 11h5v1H4z"/>
+      <path fill="#800000" d="M10 9h2v2h-2zM12 10h1v2h-1z"/>
+    </symbol>
+    <symbol id="i-scan" viewBox="0 0 16 16">
+      <path fill="#000" d="M7 1h2v1h2v1h1v2h1v2h-1v2h-1v1h-2v1H7v-1H5v-1H4V7H3V5h1V3h1V2h2z"/>
+      <path fill="#008000" d="M7 2h2v1h2v1h1v2h-1v2h-2v1H7v-1H5V7H4V5h1V3h2z"/>
+      <path fill="#000" d="M7 7h2v2H7zM8 3h1v4H8zM3 8h5v1H3z"/>
+      <path fill="#c0c0c0" d="M11 11h3v1h-3zM13 12h1v3h-1z"/>
+    </symbol>
+    <symbol id="i-stop" viewBox="0 0 16 16">
+      <path fill="#800000" d="M3 3h10v10H3zM4 4h8v8H4z"/>
+      <path fill="#fff" d="M5 5h6v1H5z"/>
+    </symbol>
+    <symbol id="i-clear" viewBox="0 0 16 16">
+      <path fill="#000" d="M3 3h10v2H3zM4 5h8l-1 9H5zM6 6h1v6H6zM9 6h1v6H9z"/>
+      <path fill="#c0c0c0" d="M4 4h8v1H4zM6 7h1v5H6zM9 7h1v5H9z"/>
+      <path fill="#800000" d="M5 14h6v1H5z"/>
+    </symbol>
+    <symbol id="i-tune" viewBox="0 0 16 16">
+      <path fill="#000" d="M1 3h14v1H1zM1 7h14v1H1zM1 11h14v1H1zM4 1h2v5H4zM10 5h2v5h-2zM6 9h2v5H6z"/>
+      <path fill="#008000" d="M5 2h1v3H5zM11 6h1v3h-1zM7 10h1v3H7z"/>
+    </symbol>
+    <symbol id="i-export" viewBox="0 0 16 16">
+      <path fill="#000" d="M2 2h12v12H2z"/>
+      <path fill="#c0c0c0" d="M3 3h10v10H3z"/>
+      <path fill="#000080" d="M4 4h8v4H4z"/>
+      <path fill="#fff" d="M5 5h2v2H5zM9 5h2v1H9z"/>
+      <path fill="#000" d="M4 10h8v1H4zM4 12h5v1H4z"/>
+    </symbol>
+    <symbol id="i-info" viewBox="0 0 16 16">
+      <path fill="#000" d="M7 1h2v1h2v1h1v2h1v4h-1v2h-1v1h-2v1H7v-1H5v-1H4V9H3V5h1V3h1V2h2z"/>
+      <path fill="#fff" d="M7 2h2v1h2v1h1v2h1v4h-1v2h-2v1H7v-1H5v-2H4V5h1V3h2z"/>
+      <path fill="#000080" d="M7 4h2v2H7zM7 7h2v4H7z"/>
+    </symbol>
+    <symbol id="i-mesh" viewBox="0 0 16 16">
+      <path fill="#000" d="M2 2h3v3H2zM11 2h3v3h-3zM6 11h4v3H6z"/>
+      <path fill="#008000" d="M3 3h1v1H3zM12 3h1v1h-1zM7 12h2v1H7z"/>
+      <path fill="#000" d="M5 4h6v1H5zM4 5h1v5H4zM11 5h1v5h-1zM8 6h1v6H8z"/>
+    </symbol>
+    <symbol id="i-radio" viewBox="0 0 16 16">
+      <path fill="#000" d="M7 9h2v6H7zM5 14h6v1H5zM7 4h2v4H7z"/>
+      <path fill="#000" d="M4 6h1v1H4zM11 6h1v1h-1zM2 4h1v3H2zM13 4h1v3h-1zM3 2h1v1H3zM12 2h1v1h-1zM5 1h1v1H5zM10 1h1v1h-1z"/>
+      <path fill="#800000" d="M7 9h2v1H7z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div id="desktop">
+  <div class="window app-window">
+    <div class="title-bar" id="titlebar">
+      <div class="title-bar-text">
+        <svg class="title-icon"><use href="#i-lora"/></svg>
+        <span>LoRa95 — LoRa 信号扫描仪</span>
+        <span class="title-sub" id="title-sub">uConsole · SX126x · AIO v2</span>
+        <span class="demo-badge" id="demo-badge">DEMO 演示</span>
+      </div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" id="win-min" title="最小化"></button>
+        <button aria-label="Maximize" id="win-max" title="最大化"></button>
+        <button aria-label="Close" id="win-close" title="关闭"></button>
+      </div>
+    </div>
+
+    <div class="menu-bar" id="menubar">
+      <div class="menu-item" data-menu="file">文件(F)</div>
+      <div class="menu-item" data-menu="scan">扫描(S)</div>
+      <div class="menu-item" data-menu="view">视图(V)</div>
+      <div class="menu-item" data-menu="tools">工具(T)</div>
+      <div class="menu-item" data-menu="help">帮助(H)</div>
+      <div class="menu-spacer"></div>
+      <div class="menu-clock" id="menu-clock">--:--:--</div>
+    </div>
+
+    <div class="menu-popup" id="menu-file">
+      <div class="menu-row" data-action="export-json"><span>导出 JSON…</span><span class="menu-key"></span></div>
+      <div class="menu-row" data-action="export-csv"><span>导出 CSV…</span><span class="menu-key"></span></div>
+      <div class="menu-sep"></div>
+      <div class="menu-row" data-action="exit"><span>退出</span><span class="menu-key">Alt+F4</span></div>
+    </div>
+    <div class="menu-popup" id="menu-scan">
+      <div class="menu-row" data-action="start"><span>开始扫描</span><span class="menu-key">F5</span></div>
+      <div class="menu-row" data-action="stop"><span>停止扫描</span><span class="menu-key">Esc</span></div>
+      <div class="menu-sep"></div>
+      <div class="menu-row" data-action="clear"><span>清空设备列表</span><span class="menu-key"></span></div>
+    </div>
+    <div class="menu-popup" id="menu-view">
+      <div class="menu-row" data-action="sort-last"><span>按最近收到排序</span><span class="menu-key">1</span></div>
+      <div class="menu-row" data-action="sort-rssi"><span>按信号强度排序</span><span class="menu-key">2</span></div>
+      <div class="menu-row" data-action="sort-name"><span>按名称排序</span><span class="menu-key">3</span></div>
+      <div class="menu-sep"></div>
+      <div class="menu-row" data-action="toggle-signals"><span>显示未解码载波</span><span class="menu-key">4</span></div>
+    </div>
+    <div class="menu-popup" id="menu-tools">
+      <div class="menu-row" data-action="restart-radio"><span>重启无线服务</span><span class="menu-key"></span></div>
+      <div class="menu-sep"></div>
+      <div class="menu-row" data-action="monitor-selected"><span>锁定选中设备频点</span><span class="menu-key">M</span></div>
+    </div>
+    <div class="menu-popup" id="menu-help">
+      <div class="menu-row" data-action="about"><span>关于 LoRa95…</span><span class="menu-key"></span></div>
+      <div class="menu-row" data-action="limits"><span>扫描能力与限制…</span><span class="menu-key"></span></div>
+    </div>
+
+    <div class="toolbar">
+      <button class="tool-btn" id="btn-start" title="开始扫描 (F5)"><svg><use href="#i-scan"/></svg><span>开始</span></button>
+      <button class="tool-btn" id="btn-stop" title="停止扫描 (Esc)"><svg><use href="#i-stop"/></svg><span>停止</span></button>
+      <div class="toolbar-sep"></div>
+      <button class="tool-btn" id="btn-monitor" title="把接收机锁定到选中设备的频点"><svg><use href="#i-tune"/></svg><span>锁定</span></button>
+      <button class="tool-btn" id="btn-clear" title="清空设备列表"><svg><use href="#i-clear"/></svg><span>清空</span></button>
+      <button class="tool-btn" id="btn-export" title="导出设备列表"><svg><use href="#i-export"/></svg><span>导出</span></button>
+      <div class="toolbar-spacer"></div>
+      <div class="radio-badge" id="radio-badge"><span class="led bad" id="radio-led"></span><span id="radio-text">无线服务未连接</span></div>
+      <div class="scan-badge" id="scan-badge"><span class="scan-spinner" id="scan-spinner"></span><span id="scan-text">空闲</span></div>
+    </div>
+
+    <div class="app-body">
+      <div class="left-col">
+        <section class="panel device-panel">
+          <div class="panel-head">
+            <svg class="panel-icon"><use href="#i-mesh"/></svg>
+            <span class="panel-title">设备</span>
+            <span class="panel-sub">Devices</span>
+            <span class="count-pill" id="device-count">0</span>
+          </div>
+          <div class="device-tools">
+            <input class="text-input" id="device-filter" type="text" placeholder="筛选名称 / 型号…" autocomplete="off" spellcheck="false">
+            <select class="select-input" id="device-sort" title="排序方式">
+              <option value="last">最近</option>
+              <option value="rssi">信号</option>
+              <option value="name">名称</option>
+              <option value="packets">包数</option>
+            </select>
+          </div>
+          <div class="device-head">
+            <span class="dh-name">名称 / 型号</span>
+            <span class="dh-rssi">RSSI</span>
+          </div>
+          <div class="device-list-wrap" id="device-list-wrap">
+            <table class="device-table" id="device-table">
+              <tbody id="device-list"></tbody>
+            </table>
+            <div class="list-empty" id="list-empty">
+              <svg class="empty-ico"><use href="#i-lora"/></svg>
+              <b>尚未发现设备</b>
+              <span>按“开始”扫描附近的 LoRa 信号。</span>
+              <span class="dim">Meshtastic / LoRaWAN / 私有协议</span>
+            </div>
+          </div>
+          <div class="device-foot" id="device-foot">等待扫描…</div>
+        </section>
+
+        <section class="panel scan-panel">
+          <div class="panel-head">
+            <svg class="panel-icon"><use href="#i-tune"/></svg>
+            <span class="panel-title">扫描参数</span>
+            <span class="panel-sub">Scan control</span>
+            <span class="plan-pill" id="plan-pill">—</span>
+          </div>
+          <div class="scan-body">
+            <div class="form-grid">
+              <div class="field span2">
+                <span>区域 / Region</span>
+                <select class="select-input" id="set-region"></select>
+              </div>
+              <div class="field span2">
+                <span>扫描模式 / Mode</span>
+                <select class="select-input" id="set-mode">
+                  <option value="quick">快速 — 常见 Meshtastic + LoRaWAN</option>
+                  <option value="standard">标准 — 全部 LoRaWAN + 子频段</option>
+                  <option value="deep">深度 — 全频段 × 全 SF</option>
+                  <option value="survey">载波勘察 — 仅 CAD</option>
+                  <option value="custom">自定义频点</option>
+                </select>
+              </div>
+              <div class="field">
+                <span>驻留 / Dwell (ms)</span>
+                <input class="text-input" id="set-dwell" type="number" min="300" max="8000" step="100" value="1200">
+              </div>
+              <div class="field">
+                <span>最低 RSSI (dBm)</span>
+                <input class="text-input" id="set-rssi" type="number" min="-150" max="-20" step="1" value="-140">
+              </div>
+            </div>
+            <div class="custom-grid" id="custom-grid">
+              <div class="field"><span>频率 (MHz)</span><input class="text-input" id="set-freq" type="number" min="400" max="2500" step="0.001" value="906.875"></div>
+              <div class="field"><span>SF</span><input class="text-input" id="set-sf" type="number" min="5" max="12" step="1" value="11"></div>
+              <div class="field"><span>带宽 (kHz)</span>
+                <select class="select-input" id="set-bw">
+                  <option value="125">125</option><option value="250" selected>250</option><option value="500">500</option><option value="62.5">62.5</option><option value="31.25">31.25</option>
+                </select>
+              </div>
+              <div class="field"><span>编码率</span>
+                <select class="select-input" id="set-cr"><option value="5">4/5</option><option value="6">4/6</option><option value="7">4/7</option><option value="8">4/8</option></select>
+              </div>
+              <div class="field"><span>同步字</span>
+                <select class="select-input" id="set-sync">
+                  <option value="43">0x2B Meshtastic</option><option value="52">0x34 LoRaWAN</option><option value="18">0x12 Private</option>
+                </select>
+              </div>
+              <div class="field"><span>前导码</span><input class="text-input" id="set-preamble" type="number" min="6" max="32" step="1" value="16"></div>
+            </div>
+            <div class="check-row">
+              <label class="check"><input type="checkbox" id="set-cad"> <span>载波检测 (CAD)</span></label>
+              <label class="check"><input type="checkbox" id="set-raw" checked> <span>显示未知帧</span></label>
+            </div>
+            <div class="scan-progress">
+              <div class="progress-track"><div class="progress-fill" id="scan-progress"></div></div>
+              <div class="progress-text" id="scan-progress-text">就绪</div>
+            </div>
+            <div class="button-row">
+              <button class="btn primary" id="btn-scan-start">开始扫描</button>
+              <button class="btn" id="btn-scan-stop">停止</button>
+              <button class="btn" id="btn-scan-clear">清空</button>
+            </div>
+            <div class="scan-note">
+              <svg><use href="#i-info"/></svg>
+              <span id="scan-note-text">LoRa 接收机一次只能解调一组频点/SF，扫描会按计划轮询。</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="right-col">
+        <section class="panel detail-head" id="detail-head">
+          <div class="detail-empty-head">
+            <svg class="big-ico"><use href="#i-radio"/></svg>
+            <div>
+              <div class="detail-title">未选择设备</div>
+              <div class="detail-sub">在左侧列表中选择一个对象，查看它的身份、协议与广播内容。</div>
+            </div>
+          </div>
+        </section>
+        <section class="panel detail-panel">
+          <div class="tabs" id="tabs">
+            <button class="tab active" data-tab="overview">概览</button>
+            <button class="tab" data-tab="messages">通信</button>
+            <button class="tab" data-tab="broadcast">广播</button>
+            <button class="tab" data-tab="packets">数据包</button>
+            <button class="tab" data-tab="band">频段</button>
+          </div>
+          <div class="detail-body" id="detail-body">
+            <div class="detail-empty">
+              <svg class="huge-ico"><use href="#i-lora"/></svg>
+              <div class="de-title">LoRa95</div>
+              <div class="de-text">Windows 95 风格的 LoRa 被动扫描器</div>
+              <div class="de-hint">支持 Meshtastic · LoRaWAN · 私有 LoRa 帧</div>
+              <div class="de-keys">
+                <span><b>F5</b> 开始</span><span><b>Esc</b> 停止</span><span><b>M</b> 锁定频点</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-cell grow"><span class="led bad" id="status-led"></span><span id="status-radio">radio: offline</span></div>
+      <div class="status-cell" id="status-profile">profile: —</div>
+      <div class="status-cell" id="status-stats">0 设备 / 0 包</div>
+      <div class="status-cell" id="status-last">—</div>
+      <div class="status-cell clock" id="status-clock">--:--:--</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="window modal" id="modal">
+    <div class="title-bar">
+      <div class="title-bar-text"><svg class="title-icon"><use href="#i-info"/></svg><span id="modal-title">LoRa95</span></div>
+      <div class="title-bar-controls"><button aria-label="Close" id="modal-close"></button></div>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-buttons" id="modal-buttons"></div>
+  </div>
+</div>
+
+<div class="context-hint" id="context-hint"></div>
+<script src="/static/js/app.js"></script>
+</body>
+</html>

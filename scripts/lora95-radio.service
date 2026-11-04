@@ -1,0 +1,23 @@
+[Unit]
+Description=LoRa95 radio daemon (SX126x on AIO v2)
+Documentation=https://github.com/Alexljz789/lora95
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/lora95
+Environment=PYTHONPATH=/opt/lora95
+Environment=PYTHONUNBUFFERED=1
+RuntimeDirectory=lora95
+RuntimeDirectoryMode=0755
+ExecStart=/usr/bin/python3 -m app.daemon --socket /run/lora95/radio.sock
+ExecStopPost=-/opt/lora95/scripts/restore-meshtastic.sh
+Restart=on-failure
+RestartSec=2
+TimeoutStopSec=25
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=LoRa95
+Name[zh_CN]=LoRa95 LoRa 扫描仪
+GenericName=LoRa Signal Scanner
+Comment=Windows 95 styled LoRa scanner for the uConsole AIO v2
+Comment[zh_CN]=Windows 95 风格的 LoRa 信号扫描仪（uConsole AIO v2）
+Exec=/opt/lora95/lora95-ui
+Path=/opt/lora95
+Icon=/opt/lora95/icon.png
+Terminal=false
+StartupNotify=false
+Categories=Utility;Network;
+Keywords=LoRa;Meshtastic;LoRaWAN;scanner;SDR;
